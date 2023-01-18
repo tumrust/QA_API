@@ -4,18 +4,21 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SecondLessonTests {
 
     @Test
     public void testGetJsonHomework() {
+        Map<String ,String> messages = new HashMap<>();
 
         JsonPath response = RestAssured
                 .get("https://playground.learnqa.ru/api/get_json_homework")
                 .jsonPath();
-        List messages = response.get("messages");
-        System.out.println(messages.get(1));
+        messages = response.get("messages[1]");
+        System.out.println(messages);
     }
 
     @Test
@@ -35,7 +38,7 @@ public class SecondLessonTests {
     @Test
     public void testLongRedirect() {
         String url = "https://playground.learnqa.ru/api/long_redirect";
-        for(;;){
+        for (; ; ) {
             Response response = RestAssured
                     .given()
                     .redirects()
@@ -47,7 +50,8 @@ public class SecondLessonTests {
             int statusCode = response.statusCode();
             url = response.getHeader("Location");
             System.out.println(statusCode + " " + url + " " + headers + "\n");
-            if(url == null)break;
+            if (url == null)
+                break;
         }
     }
 }
