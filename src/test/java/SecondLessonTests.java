@@ -1,10 +1,10 @@
 import io.restassured.RestAssured;
+import io.restassured.http.Headers;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-
 
 public class SecondLessonTests {
 
@@ -17,8 +17,9 @@ public class SecondLessonTests {
         List messages = response.get("messages");
         System.out.println(messages.get(1));
     }
+
     @Test
-    public  void testRedirect() {
+    public void testRedirect() {
         Response response = RestAssured
                 .given()
                 .redirects()
@@ -29,5 +30,24 @@ public class SecondLessonTests {
 
         String location = response.getHeader("Location");
         System.out.println(location);
+    }
+
+    @Test
+    public void testLongRedirect() {
+        String url = "https://playground.learnqa.ru/api/long_redirect";
+        for(;;){
+            Response response = RestAssured
+                    .given()
+                    .redirects()
+                    .follow(false)
+                    .when()
+                    .get(url)
+                    .andReturn();
+            Headers headers = response.getHeaders();
+            int statusCode = response.statusCode();
+            url = response.getHeader("Location");
+            System.out.println(statusCode + " " + url + " " + headers + "\n");
+            if(url == null)break;
+        }
     }
 }
