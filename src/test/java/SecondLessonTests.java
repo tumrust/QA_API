@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class SecondLessonTests {
 
     @Test
@@ -54,4 +56,48 @@ public class SecondLessonTests {
                 break;
         }
     }
+
+    @Test
+    public void testLongtimeJob() throws InterruptedException {
+        String url = "https://playground.learnqa.ru/ajax/api/longtime_job";
+        Map<String, Object> params = new HashMap<>();
+
+        JsonPath createTask = RestAssured
+                .get(url)
+                .jsonPath();
+
+        params.putAll(createTask.get());
+
+        JsonPath checkStatusNotReady = RestAssured
+                .given()
+                .queryParam("token", params.get("token"))
+                .get(url)
+                .jsonPath();
+
+        params.putAll(checkStatusNotReady.get());
+        assertEquals("Job is NOT ready", params.get("status"), "Unexpected status");
+
+        int time = (int) params.get("seconds") * 1000;
+        Thread.sleep(time);
+
+        JsonPath checkStatusReady = RestAssured
+                .given()
+                .queryParam("token", params.get("token"))
+                .get(url)
+                .jsonPath();
+
+        params.putAll(checkStatusReady.get());
+        assertEquals("Job is ready", params.get("status"), "Unexpected status");
+
+        JsonPath checkJobDone = RestAssured
+                .given()
+                .queryParam("token", params.get("token"))
+                .get(url)
+                .jsonPath();
+
+        params.putAll(checkJobDone.get());
+        assertEquals("Job is ready", params.get("status"), "Unexpected status");
+        assertEquals("42", params.get("result"), "Unexpected result");
+    }
+
 }
