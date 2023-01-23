@@ -23,4 +23,12 @@ public class ThirdLessonsTests {
                 .andReturn();
         assertEquals("hw_value",response.getCookie("HomeWork"),"Unexpected cookie value");
     }
+
+    @Test
+    public void getHeadersTest() {
+        Response response = RestAssured
+                .get("https://playground.learnqa.ru/api/homework_header")
+                .andReturn();
+       assertEquals("Some secret value", response.getHeader("x-secret-homework-header"),"Unexpected header value");
+    }
 }
