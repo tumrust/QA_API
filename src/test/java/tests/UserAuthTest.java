@@ -61,13 +61,13 @@ public class UserAuthTest extends BaseTestCase {
                     "https://playground.learnqa.ru/api/user/auth",
                     this.cookie
             );
-            Assertions.asserJsonByName(responseForCheck,"user_sid",0);
+            Assertions.asserJsonByName(responseForCheck,"user_id",0);
         }else if (condition.equals("headers")){
             Response responseForCheck = apiCoreRequests.makeGetRequestWithToken(
                     "https://playground.learnqa.ru/api/user/auth",
                     this.header
             );
-            Assertions.asserJsonByName(responseForCheck,"user_sid",0);
+            Assertions.asserJsonByName(responseForCheck,"user_id",0);
         } else {
             throw new IllegalArgumentException("Condition value is known: " + condition);
         }
